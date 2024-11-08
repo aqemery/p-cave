@@ -5,6 +5,7 @@ extends CharacterBody2D
 @export var JUMP_VELOCITY = -230.0
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var sprite_2d: Sprite2D = $Sprite2D
+@onready var hitbox: Area2D = $hitbox
 
 
 func _physics_process(delta: float) -> void:
@@ -31,7 +32,9 @@ func _physics_process(delta: float) -> void:
     var direction := Input.get_axis("ui_left", "ui_right")
     if direction:
         velocity.x = direction * SPEED
-        sprite_2d.flip_h = direction - 1
+        #sprite_2d.flip_h = direction - 1
+        scale.x = scale.y * direction
+        
         if is_on_floor() and animation_player.current_animation == "idle":
             animation_player.play("run")
     else:
@@ -46,3 +49,12 @@ func _physics_process(delta: float) -> void:
         animation_player.play("idle")
 
     move_and_slide()
+    
+    
+func hit_enemies():
+    
+    for a in hitbox.get_overlapping_areas():
+        print(a)
+        a.get_parent().queue_free()
+    
+     
